@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- 配置dataSource，使用dbcp2-->
+    <bean id="dataSourceMaster" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="${master.mysql.driver}"/>
+        <property name="url" value="${master.mysql.url}"/>
+        <property name="username" value="${master.mysql.user}"/>
+        <property name="password" value="${master.mysql.pwd}"/>
+        <property name="initialSize" value="${master.mysql.initialSize}"/>
+        <property name="maxTotal" value="${master.mysql.maxTotal}"/>
+        <property name="maxIdle" value="${master.mysql.maxIdle}"/>
+        <property name="minIdle" value="${master.mysql.minIdle}"/>
+        <property name="validationQuery" value="${master.mysql.validationQuery}"/>
+        <property name="defaultAutoCommit" value="${master.mysql.defaultAutoCommit}"/>
+    </bean>
+
+    <bean id="dataSourceSlave" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="${slave.mysql.driver}"/>
+        <property name="url" value="${slave.mysql.url}"/>
+        <property name="username" value="${slave.mysql.user}"/>
+        <property name="password" value="${slave.mysql.pwd}"/>
+        <property name="initialSize" value="${slave.mysql.initialSize}"/>
+        <property name="maxTotal" value="${slave.mysql.maxTotal}"/>
+        <property name="maxIdle" value="${slave.mysql.maxIdle}"/>
+        <property name="minIdle" value="${slave.mysql.minIdle}"/>
+        <property name="validationQuery" value="${slave.mysql.validationQuery}"/>
+        <property name="defaultAutoCommit" value="${slave.mysql.defaultAutoCommit}"/>
+    </bean>
+
+    <bean id="dataSource" class="liuzongzong.util.MultipleDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="master" value-ref="dataSourceMaster"/>
+                <entry key="slave" value-ref="dataSourceSlave"/>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="dataSourceMaster"/>
+    </bean>
+
+   <!-- <bean id="dataSourceTest" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+        <property name="uniqueResourceName" value="test" />
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+        <property name="xaProperties">
+            <props>
+                <prop key="databaseName">test</prop>
+                <prop key="serverName">127.0.0.1</prop>
+                <prop key="portNumber">3306</prop>
+                <prop key="user">root</prop>
+            </props>
+        </property>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="10"/>
+    </bean>
+
+    <bean id="dataSourceTest2" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+        <property name="uniqueResourceName" value="test2" />
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+        <property name="xaProperties">
+            <props>
+                <prop key="databaseName">test</prop>
+                <prop key="serverName">127.0.0.1</prop>
+                <prop key="portNumber">1112</prop>
+                <prop key="user">root</prop>
+            </props>
+        </property>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="10"/>
+    </bean>-->
+
+
+    <!-- 配置使用 myBatis 框架 -->
+
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!-- mapper xml文件统一放在mapper文件夹内，这样就不用在mybatis-config.xml的mappers节点中添加了，
+            当前这个配置会从classpath下加载mapper和mapper子文件夹下的所有mapper xml文件 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+    <!--<bean id="sqlSessionFactoryBeanTest" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceTest"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        &lt;!&ndash; mapper xml文件统一放在mapper文件夹内，这样就不用在mybatis-config.xml的mappers节点中添加了，
+            当前这个配置会从classpath下加载mapper和mapper子文件夹下的所有mapper xml文件 &ndash;&gt;
+        <property name="mapperLocations" value="classpath:mapper/test/*.xml"/>
+    </bean>
+
+    <bean id="sqlSessionFactoryBeanTest2" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceTest2"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        &lt;!&ndash; mapper xml文件统一放在mapper文件夹内，这样就不用在mybatis-config.xml的mappers节点中添加了，
+            当前这个配置会从classpath下加载mapper和mapper子文件夹下的所有mapper xml文件 &ndash;&gt;
+        <property name="mapperLocations" value="classpath:mapper/test2/*.xml"/>
+    </bean>-->
+
+    <!-- 配置使用 MapperScannerConfigurer 为每个Dao接口代理实现类，只需指定basePackage即可，多个basePackage用逗号或分号隔开  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="liuzongzong.dao"/>
+        <!-- 不需要指定，除非有多个Spring上下文有多个sqlSessionFactoryBean（通常是有多个数据源的情况）-->
+        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>-->
+    </bean>
+
+    <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.liuyz.dao.test"/>
+        &lt;!&ndash; 不需要指定，除非有多个Spring上下文有多个sqlSessionFactoryBean（通常是有多个数据源的情况）&ndash;&gt;
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBeanTest"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.liuyz.dao.test2"/>
+        &lt;!&ndash; 不需要指定，除非有多个Spring上下文有多个sqlSessionFactoryBean（通常是有多个数据源的情况）&ndash;&gt;
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBeanTest2"/>
+    </bean>-->
+
+
+</beans>

@@ -1,0 +1,96 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:property-placeholder location="classpath*:*.properties"/>
+    <!-- spring mvc 注解 -->
+    <mvc:annotation-driven/>
+    <!--&lt;!&ndash; 指定自己定义的validator &ndash;&gt;
+    <mvc:annotation-driven validator="validator"/>
+    &lt;!&ndash; 以下 validator  ConversionService 在使用 mvc:annotation-driven 会 自动注册&ndash;&gt;
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        &lt;!&ndash; 如果不加默认到 使用classpath下的 ValidationMessages.properties &ndash;&gt;
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+
+    &lt;!&ndash; 国际化的消息资源文件（本系统中主要用于显示/错误消息定制） &ndash;&gt;
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                &lt;!&ndash; 在web环境中一定要定位到classpath 否则默认到当前web应用下找  &ndash;&gt;
+                <value>classpath:messages</value>
+                <value>classpath:org/hibernate/validator/ValidationMessages</value>
+            </list>
+        </property>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="cacheSeconds" value="60"/>
+    </bean>-->
+
+    <!-- 扫描spring组件 -->
+    <context:component-scan base-package="liuzongzong.controller"/>
+    <!--  配置拦截器 -->
+    <!--<mvc:interceptors>
+       &lt;!&ndash; <mvc:interceptor>
+            &lt;!&ndash; 拦截所有请求 &ndash;&gt;
+            <mvc:mapping path="/**"/>
+            &lt;!&ndash; 不拦截register &ndash;&gt;
+            <mvc:exclude-mapping path="/druid/**"/>
+            <bean class="com.csyeye.interceptor.MediaTypeInterceptor"/>
+        </mvc:interceptor>&ndash;&gt;
+        &lt;!&ndash;<mvc:interceptor>
+            &lt;!&ndash; 拦截所有请求 &ndash;&gt;
+            <mvc:mapping path="/**"/>
+            &lt;!&ndash; 不拦截register &ndash;&gt;
+            <mvc:exclude-mapping path="/druid/**"/>
+            <bean class="com.csyeye.interceptor.SessionInterceptor"/>
+        </mvc:interceptor>&ndash;&gt;
+    </mvc:interceptors>-->
+
+    <mvc:default-servlet-handler/>
+    <!-- 配置视图解析器 -->
+     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+         <property name="order" value="1" />
+         <property name="contentNegotiationManager">
+             <bean class="org.springframework.web.accept.ContentNegotiationManager">
+                 <constructor-arg>
+                     <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+                         <constructor-arg name="mediaTypes">
+                             <map>
+                                 <entry key="json" value="application/json"/>
+                             </map>
+                         </constructor-arg>
+                     </bean>
+                 </constructor-arg>
+             </bean>
+         </property>
+         <property name="defaultViews">
+             <list>
+                 <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+             </list>
+         </property>
+     </bean>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="2"/>
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 异常处理：配合web.xml中error-page使用 controller内部Exception处理见com.liuyz.controller.AbsController#exception -->
+    <!--<mvc:view-controller path="/404" status-code="404" view-name="404"/>
+    <mvc:view-controller path="/500" status-code="500" view-name="500"/>-->
+    <!-- 处理静态资源 -->
+    <!--<mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
+    <mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
+    <mvc:resources mapping="/img/**" location="/WEB-INF/img/"/>-->
+    <!--使用aspectj自动代理-->
+    <aop:aspectj-autoproxy/>
+</beans>

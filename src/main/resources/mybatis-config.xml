@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- "configuration" 节点下的子节点必须匹配"(properties?,settings?,typeAliases?,typeHandlers?,
+ objectFactory?,objectWrapperFactory?,plugins?,environments?,databaseIdProvider?,
+ mappers?)"的顺序，否则报错 -->
+<configuration>
+    <!-- settings -->
+    <settings>
+        <!-- 该配置影响的所有映射器中配置的缓存的全局开关。true | false，默认值true -->
+        <!--<setting name="cacheEnabled" value="true"/>-->
+        <!-- 延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。 特定关联关系中可通过设置fetchType属性来覆盖该项的开关状态。true | false，默认值false -->
+        <!--<setting name="lazyLoadingEnabled" value="true"/>-->
+        <!-- 允许 JDBC 支持自动生成主键，需要驱动兼容。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能兼容但仍可正常工作（比如 Derby）。true | false，默认值false -->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!-- 配置默认的执行器。SIMPLE 就是普通的执行器；REUSE 执行器会重用预处理语句（prepared statements）； BATCH 执行器将重用语句并执行批量更新。SIMPLE | REUSE | BATCH，默认值SIMPLE -->
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!-- 设置超时时间，它决定驱动等待数据库响应的秒数。 -->
+        <setting name="defaultStatementTimeout" value="59"/>
+        <!-- 是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。默认false -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 指定 Mybatis 创建具有延迟加载能力的对象所用到的代理工具。CGLIB | JAVASSIST，默认值CGLIB -->
+        <!--<setting name="proxyFactory" value="CGLIB"/>-->
+    </settings>
+    <!-- 配置类别名，这样在任何xml文件中使用全限定类名时都可以使用别名 -->
+    <typeAliases>
+        <!--<typeAlias alias="user" type="com.liuyz.entity.User" />-->
+        <!-- 每一个在包 com.liuyz.entity 中的 Java Bean，在没有注解【@Alias("beanName")】的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名。 -->
+       <!-- <package name="com.liuyz.entity"/>-->
+    </typeAliases>
+    <!-- 配置dataSource等 -->
+    <!-- <environments default="development">
+         <environment id="development">
+             <transactionManager type="JDBC" />
+             <dataSource type="POOLED">
+                 <property name="driver" value="com.mysql.jdbc.Driver" />
+                 <property name="url" value="jdbc:mysql://localhost:3306/dev" />
+                 <property name="username" value="dev" />
+                 <property name="password" value="dev123" />
+             </dataSource>
+         </environment>
+     </environments>-->
+    <!-- 配置mapper -->
+    <!--<mappers>
+        <mapper resource="mapper/UserMapper.xml" />
+    </mappers>-->
+</configuration>

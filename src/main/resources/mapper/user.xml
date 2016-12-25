@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="liuzongzong.dao.UserDao" >
+
+    <cache />
+    <insert id="insert" parameterType="liuzongzong.entity.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id" >
+        INSERT ignore  INTO user(mobile) values(#{mobile});
+    </insert>
+    <select id="select" parameterType="liuzongzong.entity.User" resultType="liuzongzong.entity.User" useCache="true">
+        SELECT * FROM user where mobile=#{mobile} limit 1;
+    </select>
+
+</mapper>
